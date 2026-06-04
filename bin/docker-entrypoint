@@ -1,0 +1,21 @@
+#!/bin/bash -e
+
+echo "=== Iniciando Lavix ==="
+
+mkdir -p tmp/pids tmp/sockets log
+
+if [ -f tmp/pids/server.pid ]; then
+  rm tmp/pids/server.pid
+fi
+
+echo "=== Verificando assets compilados ==="
+echo "--- app/assets/builds/ ---"
+ls -la app/assets/builds/ 2>/dev/null || echo "DIRETÓRIO NÃO EXISTE"
+echo "--- public/assets/ ---"
+ls -la public/assets/ 2>/dev/null | head -10 || echo "DIRETÓRIO NÃO EXISTE"
+
+echo "=== Rodando db:migrate ==="
+bundle exec rails db:migrate
+
+echo "=== Iniciando Puma ==="
+exec bundle exec puma -C config/puma.rb

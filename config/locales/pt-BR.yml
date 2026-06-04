@@ -1,0 +1,84 @@
+pt-BR:
+  app:
+    name: "Lavix"
+    tagline: "Dados em decisões. Suas finanças, seu controle."
+
+  navigation:
+    dashboard: "Dashboard"
+    categories: "Categorias"
+    transactions: "Lançamentos"
+    loans: "Empréstimos"
+    plano: "Plano"
+    sign_out: "Sair"
+    sign_in: "Entrar"
+    sign_up: "Criar conta"
+
+  actions:
+    new: "Novo"
+    edit: "Editar"
+    destroy: "Excluir"
+    save: "Salvar"
+    cancel: "Cancelar"
+    back: "Voltar"
+    confirm_destroy: "Tem certeza que deseja excluir?"
+
+  dashboard:
+    title: "Visão Geral"
+    total_income: "Receitas do mês"
+    total_expense: "Despesas do mês"
+    balance: "Saldo do mês"
+    expenses_by_category: "Despesas por categoria"
+    monthly_comparison: "Receitas x Despesas (12 meses)"
+    comparison_table: "Comparativo mensal"
+    month: "Mês"
+    empty_state: "Nenhum lançamento ainda. Comece cadastrando suas primeiras categorias e lançamentos."
+
+  activerecord:
+    models:
+      user: "Usuário"
+      category: "Categoria"
+      transaction: "Lançamento"
+      loan: "Empréstimo"
+      loan_payment: "Pagamento"
+    attributes:
+      user:
+        email: "E-mail"
+        password: "Senha"
+        password_confirmation: "Confirmação de senha"
+      category:
+        name: "Nome"
+        color: "Cor"
+      transaction:
+        amount: "Valor"
+        kind: "Tipo"
+        description: "Descrição"
+        date: "Data"
+        category: "Categoria"
+      loan:
+        name: "Credor / Devedor"
+        kind: "Tipo"
+        total_amount: "Valor total"
+        interest_rate: "Taxa de juros (% a.m.)"
+        installments_count: "Número de parcelas"
+        start_date: "Data de início"
+        due_date: "Data de vencimento"
+        status: "Status"
+        notes: "Observações"
+      loan_payment:
+        amount: "Valor"
+        paid_on: "Data do pagamento"
+        installment_number: "Número da parcela"
+        notes: "Observações"
+
+  transaction_kinds:
+    income: "Receita"
+    expense: "Despesa"
+
+  loan_kinds:
+    borrowed: "Tomado"
+    lent: "Concedido"
+
+  loan_statuses:
+    active: "Ativo"
+    paid: "Pago"
+    overdue: "Em atraso"
