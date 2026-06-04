@@ -1,0 +1,6 @@
+<% flash.each do |type, message| %>
+  <% klass = type.to_s == "alert" ? "flash-alert" : "flash-notice" %>
+  <div class="<%= klass %> mb-4" data-controller="flash" data-flash-target="message">
+    <%= message %>
+  </div>
+<% end %>

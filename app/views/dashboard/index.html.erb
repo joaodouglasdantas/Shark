@@ -1,0 +1,149 @@
+<% content_for :title, "Dashboard — Lavix" %>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-3xl"><%= t("dashboard.title") %></h1>
+    <p class="text-ink-200 text-sm mt-1">Mês de <%= I18n.l(Date.current, format: "%B de %Y").capitalize %></p>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <%= link_to "Novo lançamento", new_transaction_path, class: "btn-primary" %>
+    <%= link_to "Nova categoria",  new_category_path, class: "btn-secondary" %>
+  </div>
+</div>
+
+<% if @has_data %>
+  <!-- KPI cards -->
+  <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 mb-8">
+    <div class="card">
+      <div class="card-title">Receitas do mês</div>
+      <div class="card-value text-emerald-400"><%= brl(@total_income) %></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Despesas do mês</div>
+      <div class="card-value text-red-400"><%= brl(@total_expense) %></div>
+    </div>
+    <div class="card-accent col-span-2 sm:col-span-1">
+      <div class="card-title">Saldo</div>
+      <div class="card-value <%= @balance >= 0 ? 'text-neon-400' : 'text-red-400' %>">
+        <%= brl(@balance) %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="grid gap-6 lg:grid-cols-2 mb-8">
+    <div class="card">
+      <h2 class="card-title mb-4"><%= t("dashboard.expenses_by_category") %></h2>
+      <% if @expenses_by_category.any? %>
+        <% colors = @expenses_by_category.keys.map { |k| @category_colors[k] || "#FF6B00" } %>
+        <% if @expenses_by_category.size <= DashboardController::PIE_THRESHOLD %>
+          <%= pie_chart @expenses_by_category,
+                        donut: true,
+                        colors: colors,
+                        library: { backgroundColor: "transparent" },
+                        height: "320px" %>
+        <% else %>
+          <%= bar_chart @expenses_by_category,
+                        colors: colors,
+                        library: {
+                          indexAxis: "y",
+                          backgroundColor: "transparent",
+                          plugins: { legend: { display: false } },
+                          scales: {
+                            x: { ticks: { color: "#9CA3AF" }, grid: { color: "#374151" } },
+                            y: { ticks: { color: "#F9FAFB" }, grid: { display: false } }
+                          }
+                        },
+                        height: "#{[@expenses_by_category.size * 40, 320].max}px" %>
+        <% end %>
+      <% else %>
+        <p class="text-ink-200 text-sm">Sem despesas registradas neste mês.</p>
+      <% end %>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title mb-4"><%= t("dashboard.monthly_comparison") %></h2>
+      <%= line_chart [
+            { name: "Receitas",  data: @income_series,  color: "#34D399" },
+            { name: "Despesas",  data: @expense_series, color: "#F87171" }
+          ], height: "320px", library: { backgroundColor: "transparent" } %>
+    </div>
+  </div>
+
+  <!-- Tabela comparativa -->
+  <div class="card p-0 overflow-hidden mb-8">
+    <div class="px-5 py-4 border-b border-ink-700">
+      <h2 class="card-title"><%= t("dashboard.comparison_table") %></h2>
+    </div>
+    <div class="table-scroll-wrapper">
+    <table class="table" style="min-width: 420px;">
+      <colgroup>
+        <col>
+        <col style="width:130px">
+        <col style="width:130px">
+        <col style="width:120px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="whitespace-nowrap">Mês</th>
+          <th class="text-right whitespace-nowrap">Receitas</th>
+          <th class="text-right whitespace-nowrap">Despesas</th>
+          <th class="text-right whitespace-nowrap">Saldo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @comparison.each do |row| %>
+          <tr>
+            <td class="font-medium whitespace-nowrap"><%= row[:label] %></td>
+            <td class="text-right font-mono text-emerald-300"><%= brl(row[:income]) %></td>
+            <td class="text-right font-mono text-red-300"><%= brl(row[:expense]) %></td>
+            <td class="text-right font-mono <%= row[:balance] >= 0 ? 'text-neon-400' : 'text-red-400' %>">
+              <%= brl(row[:balance]) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Lançamentos recentes -->
+  <div class="card">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="card-title">Lançamentos recentes</h2>
+      <%= link_to "Ver todos →", transactions_path, class: "link-neon text-sm" %>
+    </div>
+    <ul class="divide-y divide-ink-700">
+      <% @recent_transactions.each do |t| %>
+        <li class="py-3 flex items-center justify-between gap-4 min-w-0">
+          <div class="flex items-center gap-3 min-w-0">
+            <%= category_dot(t.category) %>
+            <div class="min-w-0">
+              <div class="text-ink-50 text-sm font-medium truncate cursor-help"
+                   title="<%= t.description.presence || t.category.name %>">
+                <%= t.description.presence || t.category.name %>
+              </div>
+              <div class="text-xs text-ink-200 truncate">
+                <%= l(t.date, format: :long) %> ·
+                <span class="cursor-help" title="<%= t.category.name %>"><%= t.category.name %></span>
+              </div>
+            </div>
+          </div>
+          <div class="font-mono text-sm whitespace-nowrap flex-shrink-0 <%= t.income? ? 'text-emerald-300' : 'text-red-300' %>">
+            <%= t.income? ? "+" : "−" %> <%= brl(t.amount) %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% else %>
+  <!-- Empty state -->
+  <div class="card-accent text-center py-20">
+    <h2 class="text-2xl mb-2">Vamos começar?</h2>
+    <p class="text-ink-200 mb-6 max-w-md mx-auto"><%= t("dashboard.empty_state") %></p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <%= link_to "Criar primeira categoria", new_category_path, class: "btn-primary" %>
+      <%= link_to "Criar primeiro lançamento", new_transaction_path, class: "btn-secondary" %>
+    </div>
+  </div>
+<% end %>

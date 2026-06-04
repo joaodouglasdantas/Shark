@@ -1,0 +1,155 @@
+<% content_for :title, "#{@loan.name} — Lavix" %>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <div class="flex flex-wrap items-center gap-2 mb-1">
+      <h1 class="text-3xl"><%= @loan.name %></h1>
+      <%= loan_kind_badge(@loan) %>
+      <%= loan_status_badge(@loan) %>
+    </div>
+    <p class="text-ink-200 text-sm mt-1">
+      Iniciado em <%= l(@loan.start_date, format: :long) %>
+      <% if @loan.due_date.present? %>
+        · Vence em <%= l(@loan.due_date, format: :long) %>
+      <% end %>
+    </p>
+  </div>
+  <div class="flex gap-2 flex-shrink-0">
+    <%= link_to "Editar", edit_loan_path(@loan), class: "btn-secondary" %>
+    <%= link_to "← Voltar", loans_path, class: "btn-ghost" %>
+  </div>
+</div>
+
+<!-- Resumo financeiro -->
+<div class="grid gap-4 grid-cols-2 sm:grid-cols-3 mb-6">
+  <div class="card">
+    <div class="card-title">Valor total</div>
+    <div class="card-value font-mono <%= @loan.borrowed? ? 'text-red-400' : 'text-emerald-400' %>">
+      <%= brl(@loan.total_amount) %>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Total pago</div>
+    <div class="card-value font-mono text-neon-400"><%= brl(@loan.amount_paid) %></div>
+  </div>
+  <div class="card-accent col-span-2 sm:col-span-1">
+    <div class="card-title">Restante</div>
+    <div class="card-value font-mono <%= @loan.amount_remaining > 0 ? 'text-red-400' : 'text-emerald-400' %>">
+      <%= brl(@loan.amount_remaining) %>
+    </div>
+  </div>
+</div>
+
+<!-- Progresso -->
+<div class="card mb-6">
+  <div class="flex justify-between text-sm text-ink-200 mb-2">
+    <span>Progresso do pagamento</span>
+    <span class="font-semibold text-ink-50"><%= @loan.progress_percentage %>%</span>
+  </div>
+  <div class="w-full bg-ink-700 rounded-full h-3">
+    <div class="h-3 rounded-full transition-all duration-700
+                <%= @loan.paid? ? 'bg-emerald-500' : (@loan.overdue? ? 'bg-red-500' : 'bg-neon-500') %>"
+         style="width: <%= @loan.progress_percentage %>%"></div>
+  </div>
+  <% if @loan.installments_count.present? %>
+    <p class="text-xs text-ink-300 mt-2">
+      <%= @loan.payments_count %> de <%= @loan.installments_count %> parcelas registradas
+    </p>
+  <% end %>
+  <% if @loan.interest_rate.present? %>
+    <p class="text-xs text-ink-300 mt-1">Taxa de juros: <%= number_with_precision(@loan.interest_rate, precision: 2) %>% a.m.</p>
+  <% end %>
+</div>
+
+<!-- Observações -->
+<% if @loan.notes.present? %>
+  <div class="card mb-6">
+    <h2 class="card-title mb-2">Observações</h2>
+    <p class="text-sm text-ink-200 whitespace-pre-line"><%= @loan.notes %></p>
+  </div>
+<% end %>
+
+<div class="grid gap-6 lg:grid-cols-2">
+  <!-- Registrar pagamento -->
+  <% unless @loan.paid? %>
+    <div class="card">
+      <h2 class="card-title mb-4">Registrar pagamento</h2>
+      <%= form_with model: [@loan, @new_payment], class: "space-y-4" do |f| %>
+        <% if @new_payment.errors.any? %>
+          <div class="flash-alert text-sm">
+            <% @new_payment.errors.full_messages.each do |msg| %>
+              <div><%= msg %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <%= f.label :amount, "Valor (R$)", class: "form-label" %>
+            <%= f.number_field :amount, class: "form-input", step: "0.01", min: "0.01",
+                  required: true, placeholder: "0,00",
+                  value: @new_payment.amount || @loan.amount_remaining %>
+          </div>
+          <div>
+            <%= f.label :paid_on, "Data do pagamento", class: "form-label" %>
+            <%= f.date_field :paid_on, class: "form-input", required: true %>
+          </div>
+        </div>
+
+        <% if @loan.installments_count.present? %>
+          <div>
+            <%= f.label :installment_number, "Nº da parcela (opcional)", class: "form-label" %>
+            <%= f.number_field :installment_number, class: "form-input", min: "1", step: "1",
+                  placeholder: "Ex.: 3" %>
+          </div>
+        <% end %>
+
+        <div>
+          <%= f.label :notes, "Observações (opcional)", class: "form-label" %>
+          <%= f.text_field :notes, class: "form-input", placeholder: "Referência, comprovante…" %>
+        </div>
+
+        <%= f.submit "Registrar pagamento", class: "btn-primary w-full" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- Histórico de pagamentos -->
+  <div class="card <%= @loan.paid? ? 'lg:col-span-2' : '' %>">
+    <h2 class="card-title mb-4">Histórico de pagamentos</h2>
+
+    <% if @payments.any? %>
+      <div class="space-y-0 divide-y divide-ink-700">
+        <% @payments.each do |payment| %>
+          <div class="py-3 flex items-center justify-between gap-4">
+            <div class="min-w-0">
+              <div class="text-sm font-medium text-ink-50 flex flex-wrap items-center gap-2">
+                <%= l(payment.paid_on, format: :long) %>
+                <% if payment.installment_number.present? %>
+                  <span class="text-xs text-ink-300">(parcela <%= payment.installment_number %>)</span>
+                <% end %>
+                <% if payment.transaction_id.present? %>
+                  <span class="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded bg-red-500/10 text-red-300">
+                    ↓ despesa lançada
+                  </span>
+                <% end %>
+              </div>
+              <% if payment.notes.present? %>
+                <div class="text-xs text-ink-300 truncate"><%= payment.notes %></div>
+              <% end %>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+              <span class="font-mono text-emerald-400 text-sm font-semibold"><%= brl(payment.amount) %></span>
+              <%= button_to "×", loan_loan_payment_path(@loan, payment), method: :delete,
+                    class: "text-red-400 hover:text-red-300 text-lg leading-none bg-transparent border-0 cursor-pointer p-1",
+                    data: { turbo_confirm: "Remover este pagamento e a despesa vinculada?" },
+                    form: { class: "inline" } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-ink-300 text-sm">Nenhum pagamento registrado ainda.</p>
+    <% end %>
+  </div>
+</div>

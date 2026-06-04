@@ -1,0 +1,113 @@
+<div class="card max-w-2xl">
+  <%= form_with model: loan, class: "space-y-5" do |f| %>
+    <% if loan.errors.any? %>
+      <div class="flash-alert">
+        <strong><%= pluralize(loan.errors.count, "erro") %> ao salvar:</strong>
+        <ul class="list-disc list-inside mt-2 text-sm">
+          <% loan.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Tipo -->
+    <div>
+      <%= f.label :kind, "Tipo de empréstimo", class: "form-label" %>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="cursor-pointer">
+          <%= f.radio_button :kind, "borrowed", class: "peer sr-only" %>
+          <div class="rounded-lg border border-ink-500 bg-ink-700 px-4 py-3 text-center text-sm font-medium
+                      peer-checked:border-red-500 peer-checked:bg-red-500/10 peer-checked:text-red-300">
+            💸 Tomado (eu devo)
+          </div>
+        </label>
+        <label class="cursor-pointer">
+          <%= f.radio_button :kind, "lent", class: "peer sr-only" %>
+          <div class="rounded-lg border border-ink-500 bg-ink-700 px-4 py-3 text-center text-sm font-medium
+                      peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-300">
+            🤝 Concedido (me devem)
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Nome -->
+    <div>
+      <%= f.label :name, "Credor / Devedor", class: "form-label" %>
+      <%= f.text_field :name, class: "form-input", required: true, autofocus: true,
+            placeholder: "Ex.: Banco Itaú, João Silva…" %>
+    </div>
+
+    <!-- Valor e juros -->
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :total_amount, "Valor total (R$)", class: "form-label" %>
+        <%= f.number_field :total_amount, class: "form-input", step: "0.01", min: "0.01",
+              required: true, placeholder: "0,00" %>
+      </div>
+      <div>
+        <%= f.label :interest_rate, "Taxa de juros (% a.m.)", class: "form-label" %>
+        <%= f.number_field :interest_rate, class: "form-input", step: "0.01", min: "0",
+              placeholder: "0,00 (opcional)" %>
+      </div>
+    </div>
+
+    <!-- Parcelas e datas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <%= f.label :installments_count, "Nº de parcelas", class: "form-label" %>
+        <%= f.number_field :installments_count, class: "form-input", min: "1", step: "1",
+              placeholder: "—" %>
+      </div>
+      <div>
+        <%= f.label :start_date, "Data início", class: "form-label" %>
+        <%= f.date_field :start_date, class: "form-input", required: true %>
+      </div>
+      <div>
+        <%= f.label :due_date, "Vencimento", class: "form-label" %>
+        <%= f.date_field :due_date, class: "form-input" %>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div>
+      <%= f.label :status, "Status", class: "form-label" %>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="cursor-pointer">
+          <%= f.radio_button :status, "active", class: "peer sr-only" %>
+          <div class="rounded-lg border border-ink-500 bg-ink-700 px-3 py-2.5 text-center text-sm font-medium
+                      peer-checked:border-neon-500 peer-checked:bg-neon-500/10 peer-checked:text-neon-300">
+            Ativo
+          </div>
+        </label>
+        <label class="cursor-pointer">
+          <%= f.radio_button :status, "overdue", class: "peer sr-only" %>
+          <div class="rounded-lg border border-ink-500 bg-ink-700 px-3 py-2.5 text-center text-sm font-medium
+                      peer-checked:border-red-500 peer-checked:bg-red-500/10 peer-checked:text-red-300">
+            Em atraso
+          </div>
+        </label>
+        <label class="cursor-pointer">
+          <%= f.radio_button :status, "paid", class: "peer sr-only" %>
+          <div class="rounded-lg border border-ink-500 bg-ink-700 px-3 py-2.5 text-center text-sm font-medium
+                      peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 peer-checked:text-emerald-300">
+            Pago
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div>
+      <%= f.label :notes, "Observações (opcional)", class: "form-label" %>
+      <%= f.text_area :notes, class: "form-input", rows: 3,
+            placeholder: "Contrato, banco, condições especiais…" %>
+    </div>
+
+    <div class="flex items-center gap-3 pt-2">
+      <%= f.submit "Salvar", class: "btn-primary" %>
+      <%= link_to "Cancelar", loans_path, class: "btn-ghost" %>
+    </div>
+  <% end %>
+</div>

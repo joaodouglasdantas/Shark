@@ -1,0 +1,46 @@
+<%#
+  Partial de paginação reutilizável.
+  Variáveis locais esperadas:
+    - current_page  (Integer)
+    - total_pages   (Integer)
+    - total_count   (Integer)
+    - item_label    (String, ex: "lançamentos" ou "categorias")
+%>
+<% if total_pages > 1 %>
+  <%
+    window = 2
+    visible = Set.new([1, total_pages])
+    ((current_page - window)..(current_page + window)).each { |p| visible << p if p.between?(1, total_pages) }
+    visible = visible.to_a.sort
+  %>
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 text-sm">
+    <span class="text-ink-300">
+      <%= number_with_delimiter(total_count) %> <%= item_label %> &middot; página <%= current_page %> de <%= total_pages %>
+    </span>
+    <div class="flex items-center gap-1 flex-wrap">
+      <% if current_page > 1 %>
+        <%= link_to "←", url_for(request.query_parameters.merge("page" => current_page - 1)),
+              class: "btn-secondary text-xs py-1 px-3" %>
+      <% end %>
+
+      <% prev_p = nil %>
+      <% visible.each do |p| %>
+        <% if prev_p && p - prev_p > 1 %>
+          <span class="text-ink-400 px-1 select-none">…</span>
+        <% end %>
+        <%= link_to p, url_for(request.query_parameters.merge("page" => p)),
+              class: "btn-secondary text-xs py-1 px-3 #{'pagination-active' if p == current_page}" %>
+        <% prev_p = p %>
+      <% end %>
+
+      <% if current_page < total_pages %>
+        <%= link_to "→", url_for(request.query_parameters.merge("page" => current_page + 1)),
+              class: "btn-secondary text-xs py-1 px-3" %>
+      <% end %>
+    </div>
+  </div>
+<% elsif total_count > 0 %>
+  <p class="mt-4 text-sm text-ink-300">
+    <%= number_with_delimiter(total_count) %> <%= item_label %>
+  </p>
+<% end %>

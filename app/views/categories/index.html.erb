@@ -1,0 +1,70 @@
+<% content_for :title, "Categorias — Lavix" %>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-3xl">Categorias</h1>
+    <p class="text-ink-200 text-sm mt-1">Personalize cada categoria com uma cor para identificar rapidamente nos relatórios.</p>
+  </div>
+  <%= link_to "Nova categoria", new_category_path, class: "btn-primary self-start" %>
+</div>
+
+<% if @categories.any? %>
+  <div class="card p-0 overflow-hidden">
+    <div class="table-scroll-wrapper">
+      <table class="table" style="min-width: 380px;">
+        <colgroup>
+          <col>
+          <col style="width:120px">
+          <col style="width:150px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Cor</th>
+            <th class="text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @categories.each do |category| %>
+            <tr>
+              <td class="cell-truncate-flex">
+                <div class="inner">
+                  <%= category_dot(category, size: 12) %>
+                  <%= link_to category_path(category),
+                        class: "link-neon font-medium",
+                        title: category.name do %>
+                    <%= category.name %>
+                  <% end %>
+                </div>
+              </td>
+              <td class="font-mono text-xs text-ink-200 whitespace-nowrap"><%= category.color %></td>
+              <td class="text-right whitespace-nowrap space-x-2">
+                <%= link_to "Editar", edit_category_path(category), class: "btn-secondary text-xs py-1 px-2" %>
+                <%
+                  txn_count   = @transaction_counts[category.id].to_i
+                  confirm_msg = txn_count > 0 \
+                    ? "Excluir \"#{category.name}\"? Isso também vai excluir #{txn_count} lançamento#{'s' if txn_count > 1} vinculado#{'s' if txn_count > 1} a ela. Essa ação não pode ser desfeita." \
+                    : "Excluir a categoria \"#{category.name}\"?"
+                %>
+                <%= button_to "Excluir", category_path(category), method: :delete,
+                      class: "btn-danger text-xs py-1 px-2 inline-flex",
+                      data: { turbo_confirm: confirm_msg }, form: { class: "inline" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%= render "shared/pagination",
+        current_page: @current_page,
+        total_pages:  @total_pages,
+        total_count:  @total_count,
+        item_label:   "categorias" %>
+<% else %>
+  <div class="card text-center py-16">
+    <p class="text-ink-200">Você ainda não tem categorias.</p>
+    <%= link_to "Criar minha primeira categoria", new_category_path, class: "btn-primary mt-4" %>
+  </div>
+<% end %>

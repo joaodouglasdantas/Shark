@@ -1,0 +1,21 @@
+<% content_for :title, "Recuperar senha" %>
+
+<div class="max-w-md mx-auto card">
+  <h2 class="text-2xl mb-4">Esqueci minha senha</h2>
+  <p class="text-sm text-ink-200 mb-6">Enviaremos um link para redefinir sua senha.</p>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "space-y-4" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div>
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input", required: true %>
+    </div>
+
+    <%= f.submit "Enviar instruções", class: "btn-primary w-full" %>
+  <% end %>
+
+  <div class="mt-6 text-center text-sm">
+    <%= link_to "Voltar para login", new_session_path(resource_name), class: "link-neon" %>
+  </div>
+</div>

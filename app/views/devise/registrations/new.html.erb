@@ -1,0 +1,36 @@
+<% content_for :title, "Criar conta no Lavix" %>
+
+<div class="max-w-md mx-auto card-accent">
+  <div class="mb-6 text-center">
+    <h2 class="text-2xl">Crie sua conta</h2>
+    <p class="text-sm text-ink-200 mt-1">Comece a controlar seus gastos em minutos.</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div>
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-input", required: true %>
+      <% if @minimum_password_length %>
+        <p class="form-hint">Mínimo de <%= @minimum_password_length %> caracteres.</p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation, class: "form-label" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input", required: true %>
+    </div>
+
+    <%= f.submit "Criar conta", class: "btn-primary w-full" %>
+  <% end %>
+
+  <div class="mt-6 text-center text-sm text-ink-200">
+    Já tem conta? <%= link_to "Entrar", new_session_path(resource_name), class: "link-neon" %>
+  </div>
+</div>

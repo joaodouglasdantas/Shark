@@ -1,0 +1,10 @@
+<% if resource.errors.any? %>
+  <div class="flash-alert mb-4">
+    <strong><%= pluralize(resource.errors.count, "erro") %> impediram que continuássemos:</strong>
+    <ul class="list-disc list-inside mt-2 text-sm">
+      <% resource.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

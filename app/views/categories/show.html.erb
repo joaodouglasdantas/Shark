@@ -1,0 +1,61 @@
+<% content_for :title, "#{@category.name} — Categoria" %>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div class="flex items-center gap-3">
+    <%= category_dot(@category, size: 14) %>
+    <h1 class="text-3xl"><%= @category.name %></h1>
+  </div>
+  <div class="flex gap-2">
+    <%= link_to "Editar", edit_category_path(@category), class: "btn-secondary" %>
+    <%= link_to "Voltar", categories_path, class: "btn-ghost" %>
+  </div>
+</div>
+
+<h2 class="text-sm uppercase tracking-widest text-ink-200 mb-3">Últimos lançamentos</h2>
+
+<% if @recent_transactions.any? %>
+  <div class="card p-0 overflow-hidden">
+    <div class="table-scroll-wrapper">
+      <table class="table" style="min-width: 480px;">
+        <colgroup>
+          <col style="width:150px">
+          <col>
+          <col style="width:100px">
+          <col style="width:120px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th class="text-right">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_transactions.each do |t| %>
+            <tr>
+              <td class="whitespace-nowrap text-sm"><%= l(t.date, format: :long) %></td>
+              <td class="cell-truncate">
+                <span title="<%= t.description.presence || '—' %>">
+                  <%= t.description.presence || "—" %>
+                </span>
+              </td>
+              <td>
+                <span class="<%= t.income? ? 'badge-income' : 'badge-expense' %>">
+                  <%= t.income? ? "Receita" : "Despesa" %>
+                </span>
+              </td>
+              <td class="text-right font-mono whitespace-nowrap <%= t.income? ? 'text-emerald-300' : 'text-red-300' %>">
+                <%= t.income? ? "+" : "−" %> <%= brl(t.amount) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% else %>
+  <div class="card text-center py-10">
+    <p class="text-ink-200">Nenhum lançamento nessa categoria ainda.</p>
+  </div>
+<% end %>

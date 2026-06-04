@@ -1,0 +1,38 @@
+<% content_for :title, "Editar conta" %>
+
+<div class="max-w-md mx-auto card">
+  <h2 class="text-2xl mb-6">Editar <%= resource_name.to_s.humanize %></h2>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "space-y-4" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div>
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, autocomplete: "email", class: "form-input" %>
+    </div>
+
+    <div>
+      <%= f.label :password, "Nova senha", class: "form-label" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-input" %>
+      <p class="form-hint">Deixe em branco para manter a atual.</p>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation, class: "form-label" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input" %>
+    </div>
+
+    <div>
+      <%= f.label :current_password, "Senha atual", class: "form-label" %>
+      <%= f.password_field :current_password, autocomplete: "current-password", class: "form-input", required: true %>
+    </div>
+
+    <%= f.submit "Atualizar", class: "btn-primary w-full" %>
+  <% end %>
+
+  <div class="mt-8 border-t border-ink-700 pt-6">
+    <h3 class="text-sm uppercase text-ink-200 tracking-widest mb-3">Zona de perigo</h3>
+    <%= button_to "Cancelar minha conta", registration_path(resource_name), method: :delete,
+          class: "btn-danger w-full", data: { turbo_confirm: "Tem certeza? Isso apaga todos os seus dados." } %>
+  </div>
+</div>

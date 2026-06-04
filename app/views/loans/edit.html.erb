@@ -1,0 +1,8 @@
+<% content_for :title, "Editar empréstimo — Lavix" %>
+
+<div class="mb-6">
+  <h1 class="text-3xl">Editar empréstimo</h1>
+  <p class="text-ink-200 text-sm mt-1"><%= @loan.name %></p>
+</div>
+
+<%= render "form", loan: @loan %>

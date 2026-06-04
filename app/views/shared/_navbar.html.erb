@@ -1,0 +1,79 @@
+<header class="sticky top-0 z-40 bg-ink-900/80 backdrop-blur border-b border-ink-700">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" data-controller="mobile-menu">
+    <div class="flex h-16 items-center justify-between">
+
+      <%= link_to (user_signed_in? ? dashboard_path : root_path), class: "flex items-center gap-2 group" do %>
+        <%= image_tag "logo.png",
+              alt: "Lavix",
+              class: "transition-all duration-300",
+              style: "height: 32px; width: auto; filter: drop-shadow(0 0 5px rgba(255,107,0,0.35));" %>
+        <span class="text-xl font-bold tracking-tight">
+          <span class="text-ink-50">La</span><span class="text-neon-500">vix</span>
+        </span>
+      <% end %>
+
+      <% if user_signed_in? %>
+        <nav class="hidden md:flex items-center gap-1">
+          <%= link_to t("navigation.dashboard"), dashboard_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(dashboard_path) ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}" %>
+          <%= link_to t("navigation.transactions"), transactions_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'transactions' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}" %>
+          <%= link_to t("navigation.categories"), categories_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'categories' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}" %>
+          <%= link_to t("navigation.loans"), loans_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'loans' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}" %>
+          <%= link_to t("navigation.plano"), plano_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'plano' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}" %>
+        </nav>
+
+        <div class="hidden md:flex items-center gap-3">
+          <span class="text-xs text-ink-200"><%= current_user.email %></span>
+          <%= button_to t("navigation.sign_out"), destroy_user_session_path, method: :delete,
+                class: "btn-ghost text-sm", data: { turbo_confirm: nil } %>
+        </div>
+
+        <button class="md:hidden btn-ghost p-2" data-action="click->mobile-menu#toggle" aria-label="Menu">
+          <svg data-mobile-menu-target="iconOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg data-mobile-menu-target="iconClose" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+      <% else %>
+        <div class="flex items-center gap-2">
+          <%= link_to t("navigation.sign_in"), new_user_session_path, class: "btn-ghost" %>
+          <%= link_to t("navigation.sign_up"), new_user_registration_path, class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if user_signed_in? %>
+      <div class="md:hidden hidden pb-3 border-t border-ink-700 mt-1" data-mobile-menu-target="menu">
+        <nav class="flex flex-col gap-1 pt-3">
+          <%= link_to t("navigation.dashboard"), dashboard_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(dashboard_path) ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}",
+                data: { action: "click->mobile-menu#close" } %>
+          <%= link_to t("navigation.transactions"), transactions_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'transactions' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}",
+                data: { action: "click->mobile-menu#close" } %>
+          <%= link_to t("navigation.categories"), categories_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'categories' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}",
+                data: { action: "click->mobile-menu#close" } %>
+          <%= link_to t("navigation.loans"), loans_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'loans' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}",
+                data: { action: "click->mobile-menu#close" } %>
+          <%= link_to t("navigation.plano"), plano_path,
+                class: "px-3 py-2 rounded-md text-sm font-medium #{controller_name == 'plano' ? 'bg-ink-700 text-neon-400' : 'text-ink-100 hover:text-neon-400 hover:bg-ink-700'}",
+                data: { action: "click->mobile-menu#close" } %>
+        </nav>
+        <div class="mt-3 pt-3 border-t border-ink-700 flex items-center justify-between">
+          <span class="text-xs text-ink-200 truncate max-w-[200px]"><%= current_user.email %></span>
+          <%= button_to t("navigation.sign_out"), destroy_user_session_path, method: :delete,
+                class: "btn-ghost text-sm", data: { turbo_confirm: nil } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</header>

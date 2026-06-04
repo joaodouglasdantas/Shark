@@ -1,0 +1,21 @@
+<% content_for :title, "Lançamento" %>
+
+<div class="card max-w-xl">
+  <h1 class="text-2xl mb-4"><%= brl(@transaction.amount) %> —
+    <span class="<%= @transaction.income? ? 'text-emerald-400' : 'text-red-400' %>">
+      <%= @transaction.income? ? "Receita" : "Despesa" %>
+    </span>
+  </h1>
+  <dl class="grid grid-cols-3 gap-4 text-sm">
+    <dt class="text-ink-200">Data</dt>        <dd class="col-span-2"><%= l(@transaction.date, format: :long) %></dd>
+    <dt class="text-ink-200">Categoria</dt>   <dd class="col-span-2 flex items-center gap-2"><%= category_dot(@transaction.category) %> <%= @transaction.category.name %></dd>
+    <dt class="text-ink-200">Descrição</dt>   <dd class="col-span-2"><%= @transaction.description.presence || "—" %></dd>
+  </dl>
+  <div class="mt-6 flex flex-wrap gap-2">
+    <%= link_to "Editar", edit_transaction_path(@transaction), class: "btn-secondary" %>
+    <%= button_to "Excluir", transaction_path(@transaction), method: :delete,
+          class: "btn-danger inline-flex",
+          data: { turbo_confirm: "Excluir lançamento?" } %>
+    <%= link_to "Voltar", transactions_path, class: "btn-ghost" %>
+  </div>
+</div>

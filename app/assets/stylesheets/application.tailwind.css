@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-ink-900 text-ink-50 antialiased;
+  }
+  body {
+    @apply min-h-screen bg-ink-900 bg-radial-fade;
+  }
+  h1, h2, h3, h4 {
+    @apply font-semibold tracking-tight;
+  }
+  a {
+    @apply transition-colors;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium
+           transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-ink-900 disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-neon-500 text-ink-900 hover:bg-neon-400 shadow-neon focus:ring-neon-500;
+  }
+  .btn-secondary {
+    @apply btn bg-ink-700 text-ink-50 hover:bg-ink-600 border border-ink-500 focus:ring-ink-300;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-500 focus:ring-red-400;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-ink-100 hover:bg-ink-700;
+  }
+
+  .card {
+    @apply rounded-xl bg-ink-800/60 backdrop-blur border border-ink-600/50 p-5 shadow-lg;
+  }
+  .card-accent {
+    @apply card border-neon-500/30 shadow-neon;
+  }
+  .card-title {
+    @apply text-sm font-medium uppercase tracking-widest text-ink-200;
+  }
+  .card-value {
+    @apply mt-2 text-3xl font-bold text-ink-50;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-ink-100 mb-1;
+  }
+  .form-input,
+  .form-select,
+  .form-textarea {
+    @apply block w-full rounded-lg bg-ink-700 border border-ink-500 text-ink-50
+           placeholder-ink-300 focus:border-neon-500 focus:ring-neon-500 shadow-sm;
+  }
+  .form-hint  { @apply mt-1 text-xs text-ink-200; }
+  .form-error { @apply mt-1 text-xs text-red-400; }
+
+  .table {
+    @apply w-full text-sm text-left border-collapse;
+  }
+  .table th {
+    @apply text-ink-200 font-medium uppercase text-xs tracking-widest border-b border-ink-600 px-4 py-3 whitespace-nowrap;
+  }
+  .table td {
+    @apply border-b border-ink-700 px-4 py-3 text-ink-50;
+  }
+  .table tr:hover td {
+    @apply bg-ink-700/50;
+  }
+
+  /* Tabela com colunas fixas + scroll horizontal em telas pequenas */
+  .table-auto-fixed {
+    width: 100%;
+    table-layout: fixed;
+  }
+  .table-scroll-wrapper {
+    overflow-x: auto;
+  }
+
+  /* Célula com texto truncado + tooltip nativo no hover */
+  .cell-truncate {
+    max-width: 0;
+  }
+  .cell-truncate > * {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+  }
+
+  /* Versão flex (para células com ícone + texto) */
+  .cell-truncate-flex {
+    max-width: 0;
+  }
+  .cell-truncate-flex > .inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  /* Garante que o dot nunca encolha dentro do flex */
+  .cell-truncate-flex > .inner > .dot {
+    flex-shrink: 0;
+  }
+  /* Truncamento aplicado ao texto (span ou link), nunca ao dot */
+  .cell-truncate-flex > .inner > span:not(.dot),
+  .cell-truncate-flex > .inner > a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    cursor: help;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-income  { @apply badge bg-emerald-500/15 text-emerald-300 border border-emerald-500/30; }
+  .badge-expense { @apply badge bg-red-500/15 text-red-300 border border-red-500/30; }
+
+  .dot {
+    @apply inline-block h-2.5 w-2.5 rounded-full ring-2 ring-ink-800;
+  }
+
+  .flash {
+    @apply rounded-lg border px-4 py-3 text-sm;
+  }
+  .flash-notice { @apply flash bg-neon-500/10 border-neon-500/30 text-neon-100; }
+  .flash-alert  { @apply flash bg-red-500/10 border-red-500/30 text-red-200; }
+
+  .link-neon { @apply text-neon-400 hover:text-neon-300 underline-offset-4 hover:underline; }
+
+  .pagination-active {
+    @apply bg-neon-500 text-ink-900 border-neon-500 hover:bg-neon-400;
+  }
+
+  /* Ícone de calendário nos inputs de data */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(55%) sepia(90%) saturate(700%) hue-rotate(360deg) brightness(105%);
+    cursor: pointer;
+    opacity: 0.85;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
+  /* Setas dos inputs numéricos */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: inner-spin-button;
+    background-color: rgba(255, 107, 0, 0.20);
+    border-left: 1px solid rgba(255, 107, 0, 0.35);
+    opacity: 1;
+    cursor: pointer;
+    border-radius: 0 6px 6px 0;
+    transition: background-color 0.15s;
+  }
+  input[type="number"]::-webkit-inner-spin-button:hover,
+  input[type="number"]::-webkit-outer-spin-button:hover {
+    background-color: rgba(255, 107, 0, 0.40);
+  }
+
+  /* Score details — <details>/<summary> no card do score */
+  .score-details-summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .score-details-summary::-webkit-details-marker { display: none; }
+  .score-details-summary::marker { display: none; }
+  .score-details-summary::before {
+    content: "▶\FE0E";
+    font-size: 0.55rem;
+    display: inline-block;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    color: #FF8515;
+  }
+  details[open] .score-details-summary::before {
+    transfo

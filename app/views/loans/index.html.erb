@@ -1,0 +1,119 @@
+<% content_for :title, "Empréstimos — Lavix" %>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-3xl">Empréstimos</h1>
+    <p class="text-ink-200 text-sm mt-1">Acompanhe os empréstimos tomados e concedidos.</p>
+  </div>
+  <%= link_to "Novo empréstimo", new_loan_path, class: "btn-primary self-start" %>
+</div>
+
+<!-- KPIs -->
+<div class="grid gap-4 grid-cols-2 sm:grid-cols-4 mb-6">
+  <div class="card">
+    <div class="card-title">Total tomado</div>
+    <div class="card-value text-red-400"><%= brl(@total_borrowed) %></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Total concedido</div>
+    <div class="card-value text-emerald-400"><%= brl(@total_lent) %></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Ativos</div>
+    <div class="card-value text-neon-400"><%= @active_count %></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Em atraso</div>
+    <div class="card-value <%= @overdue_count > 0 ? 'text-red-400' : 'text-ink-200' %>"><%= @overdue_count %></div>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-6">
+  <%= form_with url: loans_path, method: :get, class: "grid grid-cols-1 sm:grid-cols-3 gap-4 items-end" do %>
+    <div>
+      <label class="form-label">Tipo</label>
+      <select name="kind" class="form-select">
+        <option value="">Todos</option>
+        <option value="borrowed" <%= "selected" if params[:kind] == "borrowed" %>>Tomados (devo)</option>
+        <option value="lent"     <%= "selected" if params[:kind] == "lent" %>>Concedidos (me devem)</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Status</label>
+      <select name="status" class="form-select">
+        <option value="">Todos</option>
+        <option value="active"  <%= "selected" if params[:status] == "active" %>>Ativo</option>
+        <option value="overdue" <%= "selected" if params[:status] == "overdue" %>>Em atraso</option>
+        <option value="paid"    <%= "selected" if params[:status] == "paid" %>>Pago</option>
+      </select>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-primary">Filtrar</button>
+      <%= link_to "Limpar", loans_path, class: "btn-ghost" %>
+    </div>
+  <% end %>
+</div>
+
+<% if @loans.any? %>
+  <div class="space-y-4">
+    <% @loans.each do |loan| %>
+      <div class="card">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <h2 class="text-lg font-semibold text-ink-50 truncate"><%= loan.name %></h2>
+              <%= loan_kind_badge(loan) %>
+              <%= loan_status_badge(loan) %>
+            </div>
+            <div class="text-sm text-ink-200 flex flex-wrap gap-x-4 gap-y-1 mt-1">
+              <span>Início: <%= l(loan.start_date, format: :long) %></span>
+              <% if loan.due_date.present? %>
+                <span>Vencimento: <%= l(loan.due_date, format: :long) %></span>
+              <% end %>
+              <% if loan.installments_count.present? %>
+                <span><%= loan.payments_count %>/<%= loan.installments_count %> parcelas pagas</span>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="text-right flex-shrink-0">
+            <div class="text-2xl font-bold font-mono <%= loan.borrowed? ? 'text-red-400' : 'text-emerald-400' %>">
+              <%= brl(loan.total_amount) %>
+            </div>
+            <div class="text-xs text-ink-300 mt-0.5">
+              Restante: <span class="font-mono"><%= brl(loan.amount_remaining) %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de progresso -->
+        <div class="mt-4">
+          <div class="flex justify-between text-xs text-ink-300 mb-1">
+            <span>Pago: <%= brl(loan.amount_paid) %></span>
+            <span><%= loan.progress_percentage %>%</span>
+          </div>
+          <div class="w-full bg-ink-700 rounded-full h-2">
+            <div class="h-2 rounded-full transition-all duration-500
+                        <%= loan.paid? ? 'bg-emerald-500' : (loan.overdue? ? 'bg-red-500' : 'bg-neon-500') %>"
+                 style="width: <%= loan.progress_percentage %>%"></div>
+          </div>
+        </div>
+
+        <div class="flex gap-2 mt-4 pt-4 border-t border-ink-700">
+          <%= link_to "Ver detalhes", loan_path(loan), class: "btn-secondary text-sm" %>
+          <%= link_to "Editar", edit_loan_path(loan), class: "btn-ghost text-sm" %>
+          <%= button_to "Excluir", loan_path(loan), method: :delete,
+                class: "btn-danger text-sm",
+                data: { turbo_confirm: "Excluir empréstimo e todos os pagamentos?" },
+                form: { class: "inline" } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card text-center py-16">
+    <p class="text-ink-200">Nenhum empréstimo encontrado.</p>
+    <%= link_to "Cadastrar primeiro empréstimo", new_loan_path, class: "btn-primary mt-4" %>
+  </div>
+<% end %>
