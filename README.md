@@ -20,8 +20,6 @@
 
 ## Sobre o projeto
 
-**Shark** é uma releitura do [Lavix](https://github.com/joaodouglasdantas/Shark) — dashboard financeiro originalmente construído em **Ruby on Rails** com tema de fogo e lava — reconstruído do zero em **HTML + CSS + JavaScript puro**, com tema de água e oceano profundo.
-
 A motivação da mudança foi simples: eliminar a dependência de servidor e tornar o sistema acessível de qualquer dispositivo, inclusive celular, sem precisar rodar nada localmente. Todos os dados ficam salvos no `localStorage` do próprio navegador.
 
 ---
