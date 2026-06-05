@@ -325,10 +325,24 @@ h1 { word-break: break-word; overflow-wrap: break-word; }
   max-width: 100%;
 }
 
+/* ─── Gráficos (Chart.js) ────────────────────────────────── */
+/* Container do canvas: sempre 100% do card */
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+/* Canvas nunca estoura o container */
+canvas {
+  display: block !important;
+  max-width: 100% !important;
+}
+
 /* Em telas muito pequenas (<380px), cards com padding menor */
 @media (max-width: 380px) {
   .card, .card-accent { padding: 0.875rem; }
   .card-value { font-size: clamp(1rem, 5vw, 1.5rem); }
+  .chart-wrap { height: 220px !important; }
 }
 
 /* ─── Mobile menu ────────────────────────────────────────── */

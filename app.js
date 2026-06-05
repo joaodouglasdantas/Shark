@@ -476,12 +476,12 @@ const Pages = {
       <div class="card">
         <h2 class="card-title mb-4">Despesas por categoria</h2>
         ${Object.keys(expByCat).length > 0
-          ? `<div style="height:300px"><canvas id="chart-pie"></canvas></div>`
+          ? `<div class="chart-wrap" style="height:300px"><canvas id="chart-pie"></canvas></div>`
           : `<p class="text-ink-200 text-sm">Sem despesas registradas neste mês.</p>`}
       </div>
       <div class="card">
         <h2 class="card-title mb-4">Receitas × Despesas (6 meses)</h2>
-        <div style="height:300px"><canvas id="chart-line"></canvas></div>
+        <div class="chart-wrap" style="height:300px"><canvas id="chart-line"></canvas></div>
       </div>
     </div>
 
@@ -1293,18 +1293,18 @@ const Pages = {
     <div class="grid gap-6 lg:grid-cols-2 mb-8">
       <div class="card">
         <h2 class="card-title mb-4">Maiores gastos do mês</h2>
-        ${topExpCats.length>0?`<div style="height:280px"><canvas id="chart-bar-month"></canvas></div>`:`<p class="text-ink-200 text-sm">Sem despesas registradas neste mês.</p>`}
+        ${topExpCats.length>0?`<div class="chart-wrap" style="height:280px"><canvas id="chart-bar-month"></canvas></div>`:`<p class="text-ink-200 text-sm">Sem despesas registradas neste mês.</p>`}
       </div>
       <div class="card">
         <h2 class="card-title mb-4">Previsão por categoria — próximo mês</h2>
-        ${forecastItems.length>0?`<div style="height:280px"><canvas id="chart-bar-forecast"></canvas></div>`:`<p class="text-ink-200 text-sm">Dados insuficientes para previsão.</p>`}
+        ${forecastItems.length>0?`<div class="chart-wrap" style="height:280px"><canvas id="chart-bar-forecast"></canvas></div>`:`<p class="text-ink-200 text-sm">Dados insuficientes para previsão.</p>`}
       </div>
     </div>
 
     <div class="card mb-8">
       <h2 class="card-title mb-1">Evolução de gastos por categoria</h2>
       <p class="text-xs text-ink-400 mb-4">Valor gasto por mês em cada categoria</p>
-      ${evoCats.length>0?`<div style="height:300px"><canvas id="chart-evo"></canvas></div>`:`<p class="text-ink-400 text-sm">Nenhuma despesa registrada ainda.</p>`}
+      ${evoCats.length>0?`<div class="chart-wrap" style="height:300px"><canvas id="chart-evo"></canvas></div>`:`<p class="text-ink-400 text-sm">Nenhuma despesa registrada ainda.</p>`}
     </div>
 
     ${trends.length>0?`<div class="card p-0 overflow-hidden mb-8">
