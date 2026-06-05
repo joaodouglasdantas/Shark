@@ -291,6 +291,23 @@ details[open] .score-details-arrow { transform: rotate(90deg); }
   background: rgba(15, 23, 42, 0.5);
   border-radius: 0.5rem;
   border: 1px solid rgba(30, 41, 59, 0.6);
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Linhas com texto + pontos: texto encolhe, pontos ficam fixos */
+.score-details-content .flex {
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.score-details-content .flex > div {
+  flex: 1;
+  min-width: 0;
+}
+.score-details-content .flex > span {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* ─── Radio cards (seleção visual) ───────────────────────── */
