@@ -259,19 +259,39 @@ input[type="number"]::-webkit-outer-spin-button:hover {
 
 /* ─── Score details ──────────────────────────────────────── */
 .score-details-summary {
-  cursor: pointer; list-style: none;
-  display: flex; align-items: center; gap: 0.25rem;
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #38BDF8;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none !important;  /* remove underline */
+  user-select: none;
 }
+.score-details-summary:hover { color: #7DD3FC; text-decoration: none !important; }
 .score-details-summary::-webkit-details-marker { display: none; }
-.score-details-summary::before {
-  content: "▶\FE0E";
-  font-size: 0.55rem;
+.score-details-summary::marker { display: none; }
+
+/* Seta como elemento separado — não se move com o texto */
+.score-details-arrow {
   display: inline-block;
+  font-size: 0.5rem;
   transition: transform 0.2s ease;
   flex-shrink: 0;
-  color: #38BDF8;
+  line-height: 1;
 }
-details[open] .score-details-summary::before { transform: rotate(90deg); }
+details[open] .score-details-arrow { transform: rotate(90deg); }
+
+/* Conteúdo interno com padding para não colar na borda */
+.score-details-content {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(30, 41, 59, 0.6);
+}
 
 /* ─── Radio cards (seleção visual) ───────────────────────── */
 .radio-card input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }

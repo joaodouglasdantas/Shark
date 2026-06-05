@@ -1223,8 +1223,8 @@ const Pages = {
         </div>
         <p class="text-xs text-ink-300 mt-2">${scoreLabel}</p>
         <details class="mt-4 pt-4 border-t border-ink-600/50">
-          <summary class="score-details-summary link-wave text-xs font-medium">Como funciona?</summary>
-          <div class="mt-4 space-y-3 text-xs">
+          <summary class="score-details-summary"><span class="score-details-arrow">▶</span>Como funciona?</summary>
+          <div class="score-details-content space-y-3 text-xs">
             <div class="flex justify-between py-2 border-b border-ink-700"><div><p class="text-ink-100 font-medium">Ponto de partida</p><p class="text-ink-400 mt-0.5">Todo usuário começa com 50 pontos.</p></div><span class="font-mono font-semibold text-ink-300">+50 pts</span></div>
             <div class="flex justify-between py-2 border-b border-ink-700"><div><p class="text-ink-100 font-medium">Meses no azul</p><p class="text-ink-400 mt-0.5">Cada mês dos últimos 3 com receitas > gastos vale +10 pts. Você teve <span class="text-ink-200 font-semibold">${positiveMonths}/3</span> meses positivos.</p></div><span class="font-mono font-semibold ${positiveMonths>0?'text-emerald-400':'text-ink-400'} whitespace-nowrap">+${positiveMonths*10} pts</span></div>
             <div class="flex justify-between py-2 border-b border-ink-700"><div><p class="text-ink-100 font-medium">Organização</p><p class="text-ink-400 mt-0.5">Cada categoria usada nos últimos 3 meses vale +2 pts (máx. +10).</p></div><span class="font-mono font-semibold ${catBonus>0?'text-emerald-400':'text-ink-400'} whitespace-nowrap">+${catBonus} pts</span></div>
