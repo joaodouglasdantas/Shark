@@ -252,43 +252,6 @@ const Flash = {
 // ═══════════════════════════════════════════════════════════
 // SEED DATA — popula conta nova com exemplos
 // ═══════════════════════════════════════════════════════════
-function seedUser(userId) {
-  const cats = [
-    { id: 'c1', name: 'Alimentação',  color: '#0EA5E9' },
-    { id: 'c2', name: 'Transporte',   color: '#38BDF8' },
-    { id: 'c3', name: 'Saúde',        color: '#34D399' },
-    { id: 'c4', name: 'Lazer',        color: '#A78BFA' },
-    { id: 'c5', name: 'Moradia',      color: '#F97316' },
-    { id: 'c6', name: 'Salário',      color: '#4ADE80' },
-  ];
-
-  const now = new Date();
-  const ym  = (offset) => {
-    const d = new Date(now.getFullYear(), now.getMonth() + offset, 1);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-  };
-  const day = (ym, d) => `${ym}-${String(d).padStart(2,'0')}`;
-
-  const txs = [];
-  for (let mo = -3; mo <= 0; mo++) {
-    const m = ym(mo);
-    txs.push(
-      { id: Utils.uid(), kind:'income',  category_id:'c6', amount:5800, date:day(m,5),  description:'Salário' },
-      { id: Utils.uid(), kind:'expense', category_id:'c1', amount:680,  date:day(m,7),  description:'Supermercado' },
-      { id: Utils.uid(), kind:'expense', category_id:'c2', amount:320,  date:day(m,10), description:'Combustível' },
-      { id: Utils.uid(), kind:'expense', category_id:'c5', amount:1500, date:day(m,10), description:'Aluguel' },
-      { id: Utils.uid(), kind:'expense', category_id:'c4', amount:mo === 0 ? 420 : 260, date:day(m,15), description:'Lazer' },
-      { id: Utils.uid(), kind:'expense', category_id:'c3', amount:180,  date:day(m,20), description:'Farmácia' },
-      { id: Utils.uid(), kind:'income',  category_id:'c6', amount:500,  date:day(m,25), description:'Freelance' },
-    );
-  }
-
-  const k = `shark_${userId}`;
-  localStorage.setItem(`${k}_cats`, JSON.stringify(cats));
-  localStorage.setItem(`${k}_tx`,   JSON.stringify(txs));
-  localStorage.setItem(`${k}_loans`, JSON.stringify([]));
-  localStorage.setItem(`${k}_pmts`,  JSON.stringify([]));
-}
 
 // ═══════════════════════════════════════════════════════════
 // PAGES — renderizadores de cada página
@@ -1453,7 +1416,6 @@ const Handlers = {
       users.push(user);
       Store.saveUsers(users);
       Store.setCurrentUser(user);
-      seedUser(user.id);
       Router.go('dashboard');
     });
 
